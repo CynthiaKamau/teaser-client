@@ -92,8 +92,8 @@ export default function LoginPage() {
               </CardHeader>
               <CardBody>
                 <p className={`${classes.textCenter} ${classes.checkboxLabel}`}>
-                  Or Sign in with <strong>admin@material.com</strong> and the
-                  password <strong>secret</strong>{" "}
+                  Or Sign in with <strong>admin@email.com</strong> and the
+                  password <strong>admin123456</strong>{" "}
                 </p>
 
                 <TextField
