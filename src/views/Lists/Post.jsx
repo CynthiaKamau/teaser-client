@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 // @material-ui/core components
@@ -44,14 +44,11 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 const Post = (props) => {
-  const { classes } = useStyles();
+  const classes = useStyles();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [created_by, setCreatedBy] = useState("");
-  const [post, setPost] = useState("");
   const [error, setError] = useState("");
   const [showloader, setShowloader] = useState(false);
-  const [id, setId] = React.useState("");
   const { user: currentUser } = useSelector((state) => state.auth);
 
   if (!currentUser) {
@@ -68,11 +65,10 @@ const Post = (props) => {
       .then((response) => {
         setShowloader(false);
         console.log("res", response.data.message);
-        if (response.success == false) {
+        if (response.success === false) {
           setError(response.data.message);
         } else {
           let post = response.data.message;
-          setPost(post.data);
           setTitle(post.title);
           setBody(post.body);
         }
@@ -89,7 +85,7 @@ const Post = (props) => {
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={styles.cardTitleWhite}>Post</h4>
+              <h4 className={classes.cardTitleWhite}>Post</h4>
             </CardHeader>
             {showloader ? (
               <TailSpin type="Puff" color="#00BFFF" height={100} width={100} />
@@ -100,7 +96,7 @@ const Post = (props) => {
             ) : (
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={12} className={styles.cardItem}>
+                  <GridItem xs={12} sm={12} md={12} className={classes.cardItem}>
                     <h5>Title</h5>
                     <TextField
                       id="title"
@@ -113,7 +109,7 @@ const Post = (props) => {
                       variant="outlined"
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={12} className={styles.cardItem}>
+                  <GridItem xs={12} sm={12} md={12} className={classes.cardItem}>
                     <h5>Body</h5>
                     <TextField
                       id="title"
@@ -130,9 +126,6 @@ const Post = (props) => {
               </CardBody>
             )}
             <CardFooter>
-              {/* <Button type="submit" color="primary" onClick={handleProfileUpdate}>
-                  Update Profile
-                </Button> */}
             </CardFooter>
           </Card>
         </GridItem>

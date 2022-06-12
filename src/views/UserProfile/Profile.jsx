@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import axios from "axios";
 
-import { getclient } from "../../actions/posts";
 // core components
-import { TailSpin } from "react-loader-spinner";
-import TextField from "@material-ui/core/TextField";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
-import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-
+import { makeStyles } from "@material-ui/core/styles";
 import avatar from "assets/img/faces/marc.jpg";
 
 const styles = {
@@ -40,9 +35,10 @@ const styles = {
     textDecoration: "none",
   },
 };
+const useStyles = makeStyles(styles);
 
 const ClientProfile = (props) => {
-  const { classes } = props;
+  const classes = useStyles();
   const [first_name, setFname] = useState("");
   const [middle_name, setMname] = useState("");
   const [last_name, setLName] = useState("");
@@ -68,7 +64,7 @@ const ClientProfile = (props) => {
     setLName(currentUser.last_name);
     setEmail(currentUser.email);
     setPNumber(currentUser.phone_number);
-    setRole(currentUser.role_id);
+    setRole(currentUser.role.name);
     setCounty(currentUser.county);
     setSubCounty(currentUser.sub_county);
     setWard(currentUser.ward);
@@ -83,7 +79,7 @@ const ClientProfile = (props) => {
         <GridItem xs={12} sm={12} md={8}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
+              <h4 className={classes.cardTitleWhite}>Profile</h4>
               <p className={classes.cardCategoryWhite}>Complete your profile</p>
             </CardHeader>
             <CardBody>

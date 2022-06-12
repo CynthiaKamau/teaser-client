@@ -8,7 +8,13 @@ import { makeStyles } from "@material-ui/core/styles";
 // core components
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
-import { Checkbox, TextField } from "@material-ui/core";
+import {
+  Checkbox,
+  TextField,
+  MenuItem,
+  FormControlLabel,
+  Grid,
+} from "@material-ui/core";
 import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardBody from "components/Card/CardBody.jsx";
@@ -16,9 +22,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import { TailSpin } from "react-loader-spinner";
 import swal from "sweetalert2";
-import { FormControlLabel } from "@material-ui/core";
 import loginPageStyle from "assets/jss/material-dashboard-react/views/registerPageStyle.jsx";
-import { Grid } from "@material-ui/core";
 const useStyles = makeStyles(loginPageStyle);
 
 export default function RegisterPage() {
@@ -43,27 +47,21 @@ export default function RegisterPage() {
   const [password_confirmation, setPasswordConfirmation] = useState("");
   const [showloader, setShowloader] = useState(false);
 
+  const roles = [
+    { value: 1, label: "Admin" },
+    { value: 2, label: "Owner" },
+    { value: 3, label: "Supplier" },
+  ];
+
+  const genders = [
+    { value: "FEMALE", label: "Female" },
+    { value: "MALE", label: "Male" },
+    { value: "TRANS-GENDER", label: "Transgender" },
+  ];
+
   const handleRegister = (e) => {
     e.preventDefault();
     setShowloader(true);
-
-    console.log(
-      first_name,
-      middle_name,
-      last_name,
-      email,
-      role_id,
-      gender,
-      phone_number,
-      county,
-      sub_county,
-      ward,
-      constituency,
-      landmark,
-      terms_and_conditions,
-      password,
-      password_confirmation
-    );
 
     dispatch(
       register(
@@ -85,15 +83,16 @@ export default function RegisterPage() {
       )
     )
       .then((response) => {
-        console.log("response", response);
-        if (response.success == true) {
+        if (response.success === true) {
           setShowloader(false);
-          swal.fire({
-            title: "Success",
-            text: response.message,
-            icon: "success",
-            dangerMode: true,
-          }).then(()=> history.push("/auth/login-page"));
+          swal
+            .fire({
+              title: "Success",
+              text: response.message,
+              icon: "success",
+              dangerMode: true,
+            })
+            .then(() => history.push("/auth/login-page"));
         } else {
           setShowloader(false);
           swal.fire({
@@ -105,7 +104,6 @@ export default function RegisterPage() {
         }
       })
       .catch((err) => {
-        console.log("err", err);
         setShowloader(false);
         swal.fire({
           title: "Error",
@@ -218,35 +216,44 @@ export default function RegisterPage() {
             <GridContainer>
               <GridItem xs={12} sm={6} md={6}>
                 <TextField
-                  autoFocus
-                  margin="dense"
-                  id="role_id"
-                  label="Role"
-                  type="text"
+                  id="outlined-select-role"
+                  select
                   fullWidth
-                  style={{ marginBottom: "15px" }}
-                  value={role_id}
                   variant="outlined"
+                  label="Select"
+                  value={role_id}
                   onChange={(event) => {
                     setRoleId(event.target.value);
                   }}
-                />
+                  helperText="Please select your role"
+                >
+                  {roles.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </GridItem>
+
               <GridItem xs={12} sm={6} md={6}>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="gender"
-                  label="Gender"
-                  type="text"
+              <TextField
+                  id="outlined-select-gender"
+                  select
                   fullWidth
-                  style={{ marginBottom: "15px" }}
-                  value={gender}
                   variant="outlined"
+                  label="Select"
+                  value={gender}
                   onChange={(event) => {
                     setGender(event.target.value);
                   }}
-                />
+                  helperText="Please select your gender"
+                >
+                  {genders.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </GridItem>
             </GridContainer>
 

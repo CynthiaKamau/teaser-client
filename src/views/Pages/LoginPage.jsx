@@ -36,7 +36,7 @@ export default function LoginPage() {
     dispatch(login(email, password))
       .then((response) => {
         console.log("response", response)
-        if (response.success == true) {
+        if (response.success === true) {
           history.push("/admin/dashboard");
         } else {
           setShowloader(false);

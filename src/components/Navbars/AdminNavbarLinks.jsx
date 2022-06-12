@@ -56,7 +56,7 @@ class HeaderLinks extends React.Component {
   render() {
     const { classes } = this.props;
     const { open, profilePopupOpen } = this.state;
-    const { isAuthenticated, user} = this.props.auth;
+    const { isAuthenticated } = this.props.auth;
 
     const authLinks = (
       <Fragment>

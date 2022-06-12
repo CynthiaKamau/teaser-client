@@ -23,6 +23,7 @@ import {
   DialogContentText,
   Button,
   TextField,
+  StepButton,
 } from "@material-ui/core";
 import { TailSpin } from "react-loader-spinner";
 import moment from "moment";
@@ -33,7 +34,7 @@ import {
   DeleteOutlineOutlined,
   AddCircleOutlineOutlined,
 } from "@material-ui/icons";
-import { addPost } from "../../actions/posts";
+import { addPost, editPost } from "../../actions/posts";
 
 const styles = {
   cardCategoryWhite: {
@@ -74,11 +75,13 @@ function clientsList(props) {
   const { posts, posts_loading } = useSelector((state) => state.post);
   const [delete_open, setDeleteOpen] = useState(false);
   const [save_open, setSaveOpen] = useState(false);
+  const [edit_open, setEditOpen] = useState(false);
   const [selected_id, setSelectedId] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [user_id, setUserId] = useState(currentUser.id);
   const [showloader, setShowloader] = useState(false);
+  const [id, setId] = useState("");
 
   useEffect(() => {
     dispatch(getPosts());
@@ -92,6 +95,14 @@ function clientsList(props) {
 
   const handleClickCloseDelete = () => {
     setDeleteOpen(false);
+  };
+
+  const handleClickOpenEdit = () => {
+    setEditOpen(true);
+  };
+
+  const handleClickCloseEdit = () => {
+    setEditOpen(false);
   };
 
   const handleClickOpenSave = () => {
@@ -108,14 +119,73 @@ function clientsList(props) {
     dispatch(addPost(title, body, user_id))
       .then((response) => {
         setShowloader(false);
-        console.log("res", response.payload.message)
+        console.log("res", response.payload.message);
         let message = response.payload.message;
+        swal
+          .fire({
+            title: "Success",
+            text: message,
+            icon: "success",
+            dangerMode: true,
+          })
+          .then(() => {
+            setTitle("");
+            setBody("");
+            setUserId("");
+            dispatch(getPosts());
+          });
+      })
+      .catch((error) => {
+        console.log("error", error);
+        setShowloader(false);
         swal.fire({
-          title: "Success",
-          text: message,
-          icon: "success",
+          title: "Error",
+          text: "An error occured, please try again",
+          icon: "error",
           dangerMode: true,
-        }).then(() => dispatch(getPosts()));
+        });
+      });
+  };
+
+  const handleEditPost = (item) => {
+    setTitle(item.title)
+    setBody(item.body)
+    setId(item.id)
+  }
+
+  const handleEdit = () => {
+    setEditOpen(false);
+    setShowloader(true);
+    dispatch(editPost(id, title, body, user_id))
+      .then((response) => {
+        if(response.payload.success == true) {
+          setShowloader(false);
+          console.log("res", response.payload);
+          let message = response.payload.data;
+          swal
+            .fire({
+              title: "Success",
+              text: message,
+              icon: "success",
+              dangerMode: true,
+            })
+            .then(() => {
+              setTitle("");
+              setBody("");
+              setUserId("");
+              setUserId("");
+              dispatch(getPosts());
+            });
+        } else {
+          let message = response.payload.message;
+          swal.fire({
+            title: "Error",
+            text: message,
+            icon: "error",
+            dangerMode: true,
+          });
+        }
+        
       })
       .catch((error) => {
         console.log("error", error);
@@ -220,9 +290,10 @@ function clientsList(props) {
                             <IconButton aria-label="share">
                               <EditOutlined
                                 style={{ color: "black" }}
-                                onClick={() =>
-                                  history.push(`/admin/edit-post/${item.id}`)
-                                }
+                                onClick={() => {
+                                  handleClickOpenEdit();
+                                  handleEditPost(item);
+                                }}
                               />
                             </IconButton>
                             <IconButton
@@ -303,6 +374,66 @@ function clientsList(props) {
                   Cancel
                 </Button>
                 <Button variant="outlined" onClick={handleSave} color="primary">
+                  Save
+                </Button>
+              </DialogActions>
+            )}
+          </Dialog>
+
+          {/* edit dialog */}
+          <Dialog
+            open={edit_open}
+            onClose={handleClickOpenEdit}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">Post</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Edit post</DialogContentText>
+              <TextField
+                id="title"
+                autoFocus
+                margin="dense"
+                label="Title"
+                value={title}
+                multiline
+                fullWidth
+                rows={2}
+                onChange={(event) => setTitle(event.target.value)}
+                defaultValue="Default Value"
+                variant="outlined"
+                style={{ marginBottom: "10px" }}
+              />
+              <TextField
+                id="body"
+                label="Body"
+                value={body}
+                multiline
+                fullWidth
+                rows={4}
+                onChange={(event) => setBody(event.target.value)}
+                defaultValue="Default Value"
+                variant="outlined"
+              />
+            </DialogContent>
+            {showloader === true ? (
+              <div style={{ textAlign: "center", marginTop: 10 }}>
+                <TailSpin
+                  type="Puff"
+                  color="#29A15B"
+                  height={100}
+                  width={100}
+                />
+              </div>
+            ) : (
+              <DialogActions>
+                <Button
+                  variant="outlined"
+                  onClick={handleClickCloseEdit}
+                  color="secondary"
+                >
+                  Cancel
+                </Button>
+                <Button variant="outlined" onClick={handleEdit} color="primary">
                   Save
                 </Button>
               </DialogActions>
