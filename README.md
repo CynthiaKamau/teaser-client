@@ -1,7 +1,12 @@
-yarn install
+1. Create .env file with the following :
 
-yarn start:dev
+```
+NODE_ENVIRONMENT=development
+NODE_PATH=./src
+REACT_APP_API_PORT=8080
+REACT_APP_SERVER_URL=127.0.0.1:8000/api
+```
 
-yarn build
+2. yarn install
 
-yarn start
+3. yarn start:dev
